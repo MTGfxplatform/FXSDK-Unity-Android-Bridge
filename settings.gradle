@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "AlphaSDKUnityBridge"
 include ':app'
+include ':bridge'
