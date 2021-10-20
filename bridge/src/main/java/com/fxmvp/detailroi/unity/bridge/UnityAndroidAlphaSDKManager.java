@@ -1,25 +1,27 @@
-package com.mintegral.detailroi.unity.bridge;
+package com.fxmvp.detailroi.unity.bridge;
 
 import android.app.Activity;
-import android.app.Application;
 import android.text.TextUtils;
+import android.util.Log;
 
-import com.mintegral.detailroi.event.bean.IAPEventBean;
-import com.mintegral.detailroi.event.bean.IAPItemPair;
-import com.mintegral.detailroi.event.out.IAPPayStateEnum;
-import com.mintegral.detailroi.event.out.UserEventManager;
-import com.mintegral.detailroi.out.AlphaSDKFactory;
+
+import com.fxmvp.detailroi.event.bean.IAPEventBean;
+import com.fxmvp.detailroi.event.bean.IAPItemPair;
+import com.fxmvp.detailroi.event.out.IAPPayStateEnum;
+import com.fxmvp.detailroi.event.out.UserEventManager;
+import com.fxmvp.detailroi.out.AlphaSDKFactory;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UnityAndroidAlphaSDKManager {
+    private static String tag = "UnityAndroidAlphaSDKManager";
 
     public static void initAlphaSDK(Activity activity, String channel, String appId){
+
         if (activity != null) {
             AlphaSDKFactory.getAlphaSDK().init(activity.getApplication(), channel, appId);
         }
@@ -33,13 +35,19 @@ public class UnityAndroidAlphaSDKManager {
         AlphaSDKFactory.getAlphaSDK().updateChannel(channel);
     }
 
-    public void exit() {
+    public static void exit() {
         AlphaSDKFactory.getAlphaSDK().exit();
     }
 
-    public void sendCustomEvent(String eventName, JSONObject EventInfo){
-        UserEventManager userEventManager = (UserEventManager) AlphaSDKFactory.getAlphaSDK().getUserEventManager();
-        userEventManager.sendCustomEvent(eventName, EventInfo);
+    public  void sendCustomEvent(String eventName, String eventInfoJsonObject){
+        try {
+            Log.e(tag,"sendCustomEvent: eventName:"+eventName+"-eventInfoJsonObject:"+eventInfoJsonObject);
+            JSONObject EventInfo = new JSONObject(eventInfoJsonObject);
+            UserEventManager userEventManager = (UserEventManager) AlphaSDKFactory.getAlphaSDK().getUserEventManager();
+            userEventManager.track(eventName, EventInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private List<IAPItemPair> jsonArrayToList(JSONArray jsonArray){
@@ -55,6 +63,7 @@ public class UnityAndroidAlphaSDKManager {
         return list;
     }
     public void sendIapEvent(String iAPEventJsonObjectString){
+        Log.e(tag,"sendIapEvent :iAPEventJsonObjectString:"+iAPEventJsonObjectString);
         if(!TextUtils.isEmpty(iAPEventJsonObjectString)){
             try {
                 JSONObject jsonObject = new JSONObject(iAPEventJsonObjectString);
@@ -80,15 +89,17 @@ public class UnityAndroidAlphaSDKManager {
                 iapEventBean.setCurrency(jsonObject.optString("currency"));
                 iapEventBean.setAmount((float) jsonObject.optDouble("amount"));
                 iapEventBean.setFailReason(jsonObject.optString("fail_reason"));
+                Log.e(tag,"sendIapEvent :iapEventBean :"+iapEventBean.jsonObject.toString());
                 userEventManager.sendIAPEvent(iapEventBean);
-            } catch (JSONException e) {
+            } catch (Exception e) {
+                Log.e(tag,"sendIapEvent :error :"+e.getMessage());
                 e.printStackTrace();
             }
 
         }
     }
 
-    public void sendIapEvent(List<IAPItemPair> list,String transactionId, IAPPayStateEnum iapPayStateEnum,String currency,float amount,String failReason){
+    public void sendIapEvent(List<IAPItemPair> list, String transactionId, IAPPayStateEnum iapPayStateEnum, String currency, float amount, String failReason){
         UserEventManager userEventManager = (UserEventManager) AlphaSDKFactory.getAlphaSDK().getUserEventManager();
         IAPEventBean iapEventBean = new IAPEventBean();
         iapEventBean.setProductItems(list);

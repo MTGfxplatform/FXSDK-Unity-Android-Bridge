@@ -1,4 +1,4 @@
-package com.mintegral.detailroi.unity.bridge;
+package com.fxmvp.detailroi.unity.bridge;
 
 import androidx.appcompat.app.AppCompatActivity;
 

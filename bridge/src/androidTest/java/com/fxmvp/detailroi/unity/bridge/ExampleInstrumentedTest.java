@@ -1,4 +1,4 @@
-package com.mintegral.detailroi.unity.bridge;
+package com.fxmvp.detailroi.unity.bridge;
 
 import android.content.Context;
 
