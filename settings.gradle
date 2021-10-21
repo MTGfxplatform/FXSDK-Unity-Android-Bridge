@@ -4,6 +4,9 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         jcenter() // Warning: this repository is going to shut down soon
+        maven {
+            url  "https://dl-maven-android.mintegral.com/repository/alpha_detailroi_and_sdk_common"
+        }
     }
 }
 rootProject.name = "AlphaSDKUnityBridge"

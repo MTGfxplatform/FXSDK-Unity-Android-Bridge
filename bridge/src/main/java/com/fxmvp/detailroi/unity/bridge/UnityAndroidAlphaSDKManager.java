@@ -1,6 +1,7 @@
 package com.fxmvp.detailroi.unity.bridge;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -29,6 +30,8 @@ public class UnityAndroidAlphaSDKManager {
 
     public static void changeDebugState(boolean state){
         AlphaSDKFactory.getAlphaSDK().enDebug(state);
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
     public static void updateChannel(String channel){
